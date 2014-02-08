@@ -112,7 +112,7 @@ Do
     End If
 
     ' add key/value pair
-    sKey = parseKey(str, index)
+    sKey = parseKey(index)
     On Error Resume Next
 
     parseObject.Add sKey, parseValue(str, index)
@@ -302,7 +302,7 @@ Private Function parseNull(ByRef str As String, ByRef index As Long)
 
 End Function
 
-Private Function parseKey(ByRef str As String, ByRef index As Long) As String
+Private Function parseKey(ByRef index As Long) As String
 
    Dim dquote  As Boolean
    Dim squote  As Boolean
