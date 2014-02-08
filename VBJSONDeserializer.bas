@@ -31,12 +31,12 @@ Private Const A_r As Integer = 114                      ' AscW("r"
 Private Const A_t As Integer = 116                      ' AscW("t"))
 Private Const A_u As Integer = 117                      ' AscW("u")
 
-Private psErrors As String
-Private m_str() As Long
+Private m_parserrors As String
+Private m_str() As Integer
 Private m_length As Long
 
 Public Function GetParserErrors() As String
-   GetParserErrors = psErrors
+   GetParserErrors = m_parserrors
 End Function
 
 Public Function parse(ByRef str As String) As Object
@@ -46,7 +46,7 @@ index = 1
 
 GenerateStringArray str
 
-psErrors = vbNullString
+m_parserrors = vbNullString
 On Error Resume Next
 
 Call skipChar(index)
@@ -57,7 +57,7 @@ Case A_SQUARE_BRACKET_OPEN
 Case A_CURLY_BRACKET_OPEN
     Set parse = parseObject(str, index)
 Case Else
-    psErrors = "Invalid JSON"
+    m_parserrors = "Invalid JSON"
 End Select
 
 'clean array
@@ -89,7 +89,7 @@ Dim charint As Integer
 Call skipChar(index)
 
 If m_str(index) <> A_CURLY_BRACKET_OPEN Then
-   psErrors = psErrors & "Invalid Object at position " & index & " : " & Mid$(str, index) & vbCrLf
+   m_parserrors = m_parserrors & "Invalid Object at position " & index & " : " & Mid$(str, index) & vbCrLf
    Exit Function
 End If
 
@@ -107,7 +107,7 @@ Do
         index = index + 1
         Exit Do
     ElseIf index > m_length Then
-         psErrors = psErrors & "Missing '}': " & Right(str, 20) & vbCrLf
+         m_parserrors = m_parserrors & "Missing '}': " & Right(str, 20) & vbCrLf
          Exit Do
     End If
 
@@ -117,7 +117,7 @@ Do
 
     parseObject.Add sKey, parseValue(str, index)
     If Err.Number <> 0 Then
-        psErrors = psErrors & Err.Description & ": " & sKey & vbCrLf
+        m_parserrors = m_parserrors & Err.Description & ": " & sKey & vbCrLf
         Exit Do
     End If
 Loop
@@ -133,7 +133,7 @@ Set parseArray = New Collection
 Call skipChar(index)
 
 If Mid$(str, index, 1) <> "[" Then
-    psErrors = psErrors & "Invalid Array at position " & index & " : " + Mid$(str, index, 20) & vbCrLf
+    m_parserrors = m_parserrors & "Invalid Array at position " & index & " : " + Mid$(str, index, 20) & vbCrLf
     Exit Function
 End If
    
@@ -151,7 +151,7 @@ Do
         index = index + 1
         Call skipChar(index)
     ElseIf index > m_length Then
-         psErrors = psErrors & "Missing ']': " & Right(str, 20) & vbCrLf
+         m_parserrors = m_parserrors & "Missing ']': " & Right(str, 20) & vbCrLf
          Exit Do
     End If
     
@@ -159,7 +159,7 @@ Do
     On Error Resume Next
     parseArray.Add parseValue(str, index)
     If Err.Number <> 0 Then
-        psErrors = psErrors & Err.Description & ": " & Mid$(str, index, 20) & vbCrLf
+        m_parserrors = m_parserrors & Err.Description & ": " & Mid$(str, index, 20) & vbCrLf
         Exit Do
     End If
 Loop
@@ -284,7 +284,7 @@ Private Function parseBoolean(ByRef str As String, ByRef index As Long) As Boole
       parseBoolean = False
       index = index + 5
    Else
-      psErrors = psErrors & "Invalid Boolean at position " & index & " : " & Mid$(str, index) & vbCrLf
+      m_parserrors = m_parserrors & "Invalid Boolean at position " & index & " : " & Mid$(str, index) & vbCrLf
    End If
 
 End Function
@@ -297,7 +297,7 @@ Private Function parseNull(ByRef str As String, ByRef index As Long)
       parseNull = Null
       index = index + 4
    Else
-      psErrors = psErrors & "Invalid null value at position " & index & " : " & Mid$(str, index) & vbCrLf
+      m_parserrors = m_parserrors & "Invalid null value at position " & index & " : " & Mid$(str, index) & vbCrLf
    End If
 
 End Function
@@ -323,7 +323,7 @@ Private Function parseKey(ByRef index As Long) As String
                 Call skipChar(index)
                 
                 If m_str(index) <> A_COLON Then
-                    psErrors = psErrors & "Invalid Key at position " & index & " : " & parseKey & vbCrLf
+                    m_parserrors = m_parserrors & "Invalid Key at position " & index & " : " & parseKey & vbCrLf
                     Exit Do
                 End If
             End If
@@ -336,7 +336,7 @@ Private Function parseKey(ByRef index As Long) As String
                 Call skipChar(index)
                 
                 If m_str(index) <> A_COLON Then
-                    psErrors = psErrors & "Invalid Key at position " & index & " : " & parseKey & vbCrLf
+                    m_parserrors = m_parserrors & "Invalid Key at position " & index & " : " & parseKey & vbCrLf
                     Exit Do
                 End If
                 
