@@ -363,11 +363,11 @@ Private Function parseKey(ByRef index As Long) As String
             End If
         Case Else
             
-            If A_VBCRLF = m_str(charint) Then
-            ElseIf A_VBCR = m_str(charint) Then
-            ElseIf A_VBLF = m_str(charint) Then
-            ElseIf A_VBTAB = m_str(charint) Then
-            ElseIf A_SPACE = m_str(charint) Then
+            If A_VBCRLF = charint Then
+            ElseIf A_VBCR = charint Then
+            ElseIf A_VBLF = charint Then
+            ElseIf A_VBTAB = charint Then
+            ElseIf A_SPACE = charint Then
             Else
                 parseKey = parseKey & ChrW$(charint)
             End If
