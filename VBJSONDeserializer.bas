@@ -1,34 +1,35 @@
-' VBJSONDeserializer is a VB6 adaptation of the VB-JSON project @ 
+Attribute VB_Name = "VBJSONDeserializer"
+' VBJSONDeserializer is a VB6 adaptation of the VB-JSON project @
 ' http://www.ediy.co.nz/vbjson-json-parser-library-in-vb6-xidc55680.html
 ' BSD Licensed
 
 Option Explicit
 
-Private Const A_CURLY_BRACKET_OPEN As Integer = 123		' AscW("{")
-Private Const A_CURLY_BRACKET_CLOSE As Integer = 125	' AscW("}")
-Private Const A_SQUARE_BRACKET_OPEN As Integer = 91		' AscW("[")
-Private Const A_SQUARE_BRACKET_CLOSE As Integer = 93	' AscW("]")
-Private Const A_BRACKET_OPEN As Integer = 40			' AscW("(")
-Private Const A_BRACKET_CLOSE As Integer = 41			' AscW(")")
-Private Const A_COMMA As Integer = 44					' AscW(",")
-Private Const A_DOUBLE_QUOTE As Integer = 34			' AscW("""")
-Private Const A_SINGLE_QUOTE As Integer = 39			' AscW("'")
-Private Const A_BACKSLASH As Integer = 92				' AscW("\")
-Private Const A_FORWARDSLASH As Integer = 47 			' AscW("/")
-Private Const A_COLON As Integer = 58					' AscW(":")
-Private Const A_SPACE As Integer = 32					' AscW(" ")
-Private Const A_ASTERIX As Integer = 42					' AscW("*")
-Private Const A_VBCR As Integer = 13					' AscW("vbcr")
-Private Const A_VBLF As Integer = 10					' AscW("vblf")
-Private Const A_VBTAB As Integer = 9 					' AscW("vbTab")
-Private Const A_VBCRLF As Integer = 13					' AscW("vbcrlf")
+Private Const A_CURLY_BRACKET_OPEN As Integer = 123     ' AscW("{")
+Private Const A_CURLY_BRACKET_CLOSE As Integer = 125    ' AscW("}")
+Private Const A_SQUARE_BRACKET_OPEN As Integer = 91     ' AscW("[")
+Private Const A_SQUARE_BRACKET_CLOSE As Integer = 93    ' AscW("]")
+Private Const A_BRACKET_OPEN As Integer = 40            ' AscW("(")
+Private Const A_BRACKET_CLOSE As Integer = 41           ' AscW(")")
+Private Const A_COMMA As Integer = 44                   ' AscW(",")
+Private Const A_DOUBLE_QUOTE As Integer = 34            ' AscW("""")
+Private Const A_SINGLE_QUOTE As Integer = 39            ' AscW("'")
+Private Const A_BACKSLASH As Integer = 92               ' AscW("\")
+Private Const A_FORWARDSLASH As Integer = 47            ' AscW("/")
+Private Const A_COLON As Integer = 58                   ' AscW(":")
+Private Const A_SPACE As Integer = 32                   ' AscW(" ")
+Private Const A_ASTERIX As Integer = 42                 ' AscW("*")
+Private Const A_VBCR As Integer = 13                    ' AscW("vbcr")
+Private Const A_VBLF As Integer = 10                    ' AscW("vblf")
+Private Const A_VBTAB As Integer = 9                    ' AscW("vbTab")
+Private Const A_VBCRLF As Integer = 13                  ' AscW("vbcrlf")
 
-Private Const A_b As Integer = 98						' AscW("b")
-Private Const A_f As Integer = 102						' AscW("f")
-Private Const A_n As Integer = 110						' AscW("n")
-Private Const A_r As Integer = 114						' AscW("r"
-Private Const A_t As Integer = 116						' AscW("t"))
-Private Const A_u As Integer = 117						' AscW("u")
+Private Const A_b As Integer = 98                       ' AscW("b")
+Private Const A_f As Integer = 102                      ' AscW("f")
+Private Const A_n As Integer = 110                      ' AscW("n")
+Private Const A_r As Integer = 114                      ' AscW("r"
+Private Const A_t As Integer = 116                      ' AscW("t"))
+Private Const A_u As Integer = 117                      ' AscW("u")
 
 Private psErrors As String
 Private m_str() As Long
@@ -48,7 +49,7 @@ GenerateStringArray str
 psErrors = vbNullString
 On Error Resume Next
 
-Call skipChar(str, index)
+Call skipChar(index)
 
 Select Case m_str(index)
 Case A_SQUARE_BRACKET_OPEN
@@ -85,7 +86,7 @@ Set parseObject = New Dictionary
 Dim sKey As String
 Dim charint As Integer
 
-Call skipChar(str, index)
+Call skipChar(index)
 
 If m_str(index) <> A_CURLY_BRACKET_OPEN Then
    psErrors = psErrors & "Invalid Object at position " & index & " : " & Mid$(str, index) & vbCrLf
@@ -95,13 +96,13 @@ End If
 index = index + 1
 
 Do
-    Call skipChar(str, index)
+    Call skipChar(index)
     
     charint = m_str(index)
     
     If charint = A_COMMA Then
         index = index + 1
-        Call skipChar(str, index)
+        Call skipChar(index)
     ElseIf charint = A_CURLY_BRACKET_CLOSE Then
         index = index + 1
         Exit Do
@@ -129,7 +130,7 @@ Dim charint As Integer
 
 Set parseArray = New Collection
 
-Call skipChar(str, index)
+Call skipChar(index)
 
 If Mid$(str, index, 1) <> "[" Then
     psErrors = psErrors & "Invalid Array at position " & index & " : " + Mid$(str, index, 20) & vbCrLf
@@ -139,7 +140,7 @@ End If
 index = index + 1
 
 Do
-    Call skipChar(str, index)
+    Call skipChar(index)
     
     charint = m_str(index)
     
@@ -148,7 +149,7 @@ Do
         Exit Do
     ElseIf charint = A_COMMA Then
         index = index + 1
-        Call skipChar(str, index)
+        Call skipChar(index)
     ElseIf index > m_length Then
          psErrors = psErrors & "Missing ']': " & Right(str, 20) & vbCrLf
          Exit Do
@@ -167,7 +168,7 @@ End Function
 
 Private Function parseValue(ByRef str As String, ByRef index As Long)
 
-   Call skipChar(str, index)
+   Call skipChar(index)
 
     Select Case m_str(index)
     Case A_DOUBLE_QUOTE, A_SINGLE_QUOTE
@@ -198,7 +199,7 @@ Private Function parseString(ByRef str As String, ByRef index As Long) As String
    Dim charint As Integer
    Dim Code    As String
    
-   Call skipChar(str, index)
+   Call skipChar(index)
    
    quoteint = m_str(index)
    
@@ -259,7 +260,7 @@ Private Function parseNumber(ByRef str As String, ByRef index As Long)
    Dim Value   As String
    Dim Char    As String
 
-   Call skipChar(str, index)
+   Call skipChar(index)
    Do While index > 0 And index <= m_length
       Char = Mid$(str, index, 1)
       If InStr("+-0123456789.eE", Char) Then
@@ -274,7 +275,7 @@ End Function
 
 Private Function parseBoolean(ByRef str As String, ByRef index As Long) As Boolean
 
-   Call skipChar(str, index)
+   Call skipChar(index)
    
    If Mid$(str, index, 4) = "true" Then
       parseBoolean = True
@@ -290,7 +291,7 @@ End Function
 
 Private Function parseNull(ByRef str As String, ByRef index As Long)
 
-   Call skipChar(str, index)
+   Call skipChar(index)
    
    If Mid$(str, index, 4) = "null" Then
       parseNull = Null
@@ -307,7 +308,7 @@ Private Function parseKey(ByRef str As String, ByRef index As Long) As String
    Dim squote  As Boolean
    Dim charint As Integer
    
-   Call skipChar(str, index)
+   Call skipChar(index)
    
     Do While index > 0 And index <= m_length
     
@@ -319,7 +320,7 @@ Private Function parseKey(ByRef str As String, ByRef index As Long) As String
             index = index + 1
             If Not dquote Then
             
-                Call skipChar(str, index)
+                Call skipChar(index)
                 
                 If m_str(index) <> A_COLON Then
                     psErrors = psErrors & "Invalid Key at position " & index & " : " & parseKey & vbCrLf
@@ -332,7 +333,7 @@ Private Function parseKey(ByRef str As String, ByRef index As Long) As String
             squote = Not squote
             index = index + 1
             If Not squote Then
-                Call skipChar(str, index)
+                Call skipChar(index)
                 
                 If m_str(index) <> A_COLON Then
                     psErrors = psErrors & "Invalid Key at position " & index & " : " & parseKey & vbCrLf
@@ -365,7 +366,7 @@ Private Function parseKey(ByRef str As String, ByRef index As Long) As String
 
 End Function
 
-Private Sub skipChar(ByRef str As String, ByRef index As Long)
+Private Sub skipChar(ByRef index As Long)
 
 Dim bComment As Boolean
 Dim bStartComment As Boolean
