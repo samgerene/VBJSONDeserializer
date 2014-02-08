@@ -73,7 +73,7 @@ Case Else
 End Select
 
 'clean array
-Erase m_str
+ReDim m_str(1)
 
 End Function
 

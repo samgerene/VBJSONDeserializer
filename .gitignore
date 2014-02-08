@@ -213,3 +213,9 @@ pip-log.txt
 
 #Mr Developer
 .mr.developer.cfg
+*.vbw
+JSONDeserializer.exe
+test.json
+/test - 20000.json
+/test - 30000.json
+/test - 35000.json

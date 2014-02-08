@@ -18,7 +18,7 @@ Begin VB.Form frmMain
       Top             =   1080
       Width           =   1455
    End
-   Begin VB.OptionButton OptionModClass 
+   Begin VB.OptionButton OptionMod 
       Caption         =   "Run Module"
       Height          =   255
       Left            =   120
@@ -128,14 +128,13 @@ Dim numberofruns As Integer
 Dim items As Variant
 Dim i As Integer
 Dim totaltime As Long
+Dim arraytime As Long
 
 numberofruns = 5
 filename = Me.TextFilePath.Text
 filecontents = FileText(filename)
 
 Screen.MousePointer = vbHourglass
-
-Set deserializer = New cJSONDeserializer
 
 If Me.CheckJson.Value = vbChecked Then
     
@@ -165,10 +164,14 @@ If Me.CheckVBJSONDeserializer.Value = vbChecked Then
     
     For i = 1 To numberofruns
         sw.StartTimer
-        If Me.OptionModClass Then
+        If Me.OptionMod Then
             Set items = VBJSONDeserializer.parse(filecontents)
+            Debug.Print VBJSONDeserializer.GetParserErrors
         Else
-            Set items = JSON.parse(filecontents)
+            Set deserializer = New cJSONDeserializer
+            Set items = deserializer.parse(filecontents)
+            Set deserializer = Nothing
+            arraytime = 0
         End If
         elapsedtime = sw.EndTimer
         totaltime = totaltime + elapsedtime
