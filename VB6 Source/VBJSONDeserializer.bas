@@ -33,6 +33,9 @@ Private Const A_r As Integer = 114                      ' AscW("r"
 Private Const A_t As Integer = 116                      ' AscW("t"))
 Private Const A_u As Integer = 117                      ' AscW("u")
 
+Private m_decSep As String
+Private m_groupSep As String
+
 Private m_parserrors As String
 Private m_str() As Integer
 Private m_length As Long
@@ -42,6 +45,9 @@ Public Function GetParserErrors() As String
 End Function
 
 Public Function parse(ByRef str As String) As Object
+
+m_decSep = ModLocale.GetRegionalSettings(LOCALE_SDECIMAL)
+m_groupSep = ModLocale.GetRegionalSettings(LOCALE_SGROUPING)
 
 Dim index As Long
 index = 1
@@ -267,20 +273,31 @@ End Function
 
 Private Function parseNumber(ByRef str As String, ByRef index As Long)
 
-   Dim Value   As String
-   Dim Char    As String
+Dim Value   As String
+Dim Char    As String
 
-   Call skipChar(index)
-   Do While index > 0 And index <= m_length
-      Char = Mid$(str, index, 1)
-      If InStr("+-0123456789.eE", Char) Then
-         Value = Value & Char
-         index = index + 1
-      Else
-         parseNumber = CDec(Value)
-         Exit Function
-      End If
-   Loop
+Call skipChar(index)
+
+Do While index > 0 And index <= m_length
+    Char = Mid$(str, index, 1)
+    If InStr("+-0123456789.eE", Char) Then
+        Value = Value & Char
+        index = index + 1
+    Else
+        'check what is the grouping seperator
+        If Not m_decSep = "." Then
+            Value = Replace(Value, ".", m_decSep)
+        End If
+     
+        If m_groupSep = "." Then
+            Value = Replace(Value, ".", m_decSep)
+        End If
+     
+        parseNumber = CDec(Value)
+        Exit Function
+    End If
+Loop
+   
 End Function
 
 Private Function parseBoolean(ByRef str As String, ByRef index As Long) As Boolean

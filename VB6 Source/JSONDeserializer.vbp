@@ -12,6 +12,7 @@ Class=StopWatch; StopWatch.cls
 Module=VBJSONDeserializer; VBJSONDeserializer.bas
 Class=cJSONDeserializer; cJSONDeserializer.cls
 Object={A8F9B8E7-E699-4FCE-A647-72C877F8E632}#1.9#0; EditCtlsU.ocx
+Module=ModLocale; ModLocale.bas
 IconForm="frmMain"
 Startup="frmMain"
 HelpFile=""
